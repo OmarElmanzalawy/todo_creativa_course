@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:todo_starter/models/task_model.dart';
 
 class TaskItem extends StatelessWidget {
-  const TaskItem({super.key});
+  const TaskItem({super.key, required this.model});
+
+  final TaskModel model;
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +40,8 @@ class TaskItem extends StatelessWidget {
           ),
           
         ),
-        title: Text("Task title"),
-        subtitle: Text("This is a subtitle"),
+        title: Text(model.title),
+        subtitle: Text(model.description),
         trailing: IconButton(icon:  Icon(Icons.remove),onPressed: (){}
       ),
       ),

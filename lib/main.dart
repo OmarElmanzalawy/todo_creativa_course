@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_starter/app_brain.dart';
 import 'package:todo_starter/screens/home_screen.dart';
 import 'package:todo_starter/screens/signup_screen.dart';
+
+final AppBrain appBrain = AppBrain();
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +21,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SignupScreen()
+      home: FirebaseAuth.instance.currentUser == null ? SignupScreen() : HomeScreen()
     );
   }
 }

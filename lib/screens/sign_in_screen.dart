@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_starter/screens/home_screen.dart';
 import 'package:todo_starter/screens/signup_screen.dart';
 import 'package:todo_starter/widgets/custom_textfield.dart';
 
@@ -13,8 +14,9 @@ class SignInScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: SafeArea(
-        child: Container(
+        child: SizedBox(
           width: double.infinity,
           // color: Colors.red,
           child: Form(
@@ -42,10 +44,14 @@ class SignInScreen extends StatelessWidget {
                           hintText: "Email",
                           prefixIcon: Icons.person_outline,
                           validator: (p0) {
-                            if(p0 == null){
-                              return "Name can't be empty";
+                            if(p0 == null || p0.isEmpty){
+                              return "Email can't be empty";
                             }
-                            return p0.length <= 3 ? "Name can't be shorter than 3 characters " : null;
+                            if(!p0.contains("@gmail.com")){
+                              return "Email must contain @gmail.com";
+                            }
+                            return p0.length <= 6 ? "Email can't be shorter than 6 characters " : null;
+
                           },
                           ),
                         const SizedBox(height: 12,),
@@ -54,9 +60,10 @@ class SignInScreen extends StatelessWidget {
                           hintText: "Password",
                           prefixIcon: Icons.email_outlined,
                           validator: (p0) {
-                            if(!p0!.contains("@gmail.com")){
-
+                            if(p0 == null || p0.isEmpty){
+                              return "Password can't be empty";
                             }
+                            return p0.length <= 6 ? "Password can't be shorter than 6 characters " : null;
                           },
                           ),
                           const SizedBox(height: 10,),
@@ -78,6 +85,9 @@ class SignInScreen extends StatelessWidget {
                                     email: _emailController.text,
                                     password: _passwordController.text
                                   );
+                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:(context) {
+                                    return HomeScreen();
+                                  },), (route) => false);
                                   }on FirebaseAuthException catch (e){
                                     print(e.code);
 
@@ -103,7 +113,7 @@ class SignInScreen extends StatelessWidget {
                     children: [
                       Text("Don't have an account?"),
                       TextButton(onPressed: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> SignupScreen()));
+                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> SignupScreen()), (route) => false);
                       },
                        child: Text("Sign Up",style: TextStyle(fontWeight: FontWeight.bold),))
                     ],

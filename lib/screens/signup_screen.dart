@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_starter/screens/home_screen.dart';
 import 'package:todo_starter/screens/sign_in_screen.dart';
 import 'package:todo_starter/widgets/custom_textfield.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
@@ -17,6 +18,7 @@ class SignupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: SafeArea(
         child: Container(
           width: double.infinity,
@@ -102,9 +104,10 @@ class SignupScreen extends StatelessWidget {
                                     password: _passwordController.text
                                   );
                                   await user.user!.updateDisplayName(_nameController.text);
-                                  }catch(e){
+                                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomeScreen()),(route) => false);
+                                  }catch(error){
                                     print("error creating user");
-                                    print(e.toString());
+                                    print(error.toString());
                                   }
                                   
                                   //Navigate
@@ -121,7 +124,7 @@ class SignupScreen extends StatelessWidget {
                     children: [
                       Text("Already have an account?"),
                       TextButton(onPressed: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=> SignInScreen()));
+                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=> SignInScreen()),(predicate) => false);
                       },
                        child: Text("Sign In",style: TextStyle(fontWeight: FontWeight.bold),))
                     ],
