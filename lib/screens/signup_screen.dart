@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_starter/screens/sign_in_screen.dart';
 import 'package:todo_starter/widgets/custom_textfield.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 
 class SignupScreen extends StatelessWidget {
   SignupScreen({super.key});
@@ -64,6 +66,7 @@ class SignupScreen extends StatelessWidget {
                           const SizedBox(height: 12,),
                            CustomTextfield(
                           controller: _passwordController,
+                          isHidden: true,
                           hintText: "Password",
                           prefixIcon: Icons.lock_outline,
                           validator: (p0) {
@@ -74,6 +77,7 @@ class SignupScreen extends StatelessWidget {
                            CustomTextfield(
                           controller: _confirmPasswordController,
                           hintText: "Confirm Password",
+                          isHidden: true,
                           prefixIcon: Icons.lock_outline,
                           ),
                           const SizedBox(height: 20,),
@@ -87,8 +91,24 @@ class SignupScreen extends StatelessWidget {
                                 padding: WidgetStatePropertyAll(EdgeInsets.all(12)),
                                 shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)))
                               ),
-                              onPressed: (){
+                              onPressed: ()async{
                                 final isValid = formKey.currentState!.validate();
+                                if(isValid){
+                                  //Create user
+                                  // FirebaseA
+                                  try{
+                                    final user = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                                    email: _emailController.text,
+                                    password: _passwordController.text
+                                  );
+                                  await user.user!.updateDisplayName(_nameController.text);
+                                  }catch(e){
+                                    print("error creating user");
+                                    print(e.toString());
+                                  }
+                                  
+                                  //Navigate
+                                }
                               },
                                child: Text("Sign Up",style: TextStyle(fontWeight: FontWeight.bold),)
                                ),

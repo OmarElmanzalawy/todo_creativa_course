@@ -6,12 +6,14 @@ class CustomTextfield extends StatelessWidget {
     required this.controller,
     required this.hintText,
     required this.prefixIcon,
-    this.validator
+    this.validator,
+    this.isHidden = false
   });
 
   final TextEditingController controller;
   final String hintText;
   final IconData prefixIcon;
+  final bool isHidden;
   final String? Function(String?)? validator;
 
   @override
@@ -19,6 +21,7 @@ class CustomTextfield extends StatelessWidget {
     return TextFormField(
       controller: controller,
       validator: validator ?? (value){},
+      obscureText: isHidden,
       decoration: InputDecoration(
         fillColor: Colors.grey.shade200,
         filled: true,

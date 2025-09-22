@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_starter/screens/signup_screen.dart';
 import 'package:todo_starter/widgets/custom_textfield.dart';
@@ -38,7 +39,7 @@ class SignInScreen extends StatelessWidget {
                       children: [
                         CustomTextfield(
                           controller: _emailController,
-                          hintText: "Full Name",
+                          hintText: "Email",
                           prefixIcon: Icons.person_outline,
                           validator: (p0) {
                             if(p0 == null){
@@ -50,7 +51,7 @@ class SignInScreen extends StatelessWidget {
                         const SizedBox(height: 12,),
                         CustomTextfield(
                           controller: _passwordController,
-                          hintText: "Email",
+                          hintText: "Password",
                           prefixIcon: Icons.email_outlined,
                           validator: (p0) {
                             if(!p0!.contains("@gmail.com")){
@@ -69,8 +70,27 @@ class SignInScreen extends StatelessWidget {
                                 padding: WidgetStatePropertyAll(EdgeInsets.all(12)),
                                 shape: WidgetStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)))
                               ),
-                              onPressed: (){
+                              onPressed: ()async{
                                 final isValid = _formKey.currentState!.validate();
+                                if(isValid){
+                                  try{
+                                    final user = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                                    email: _emailController.text,
+                                    password: _passwordController.text
+                                  );
+                                  }on FirebaseAuthException catch (e){
+                                    print(e.code);
+
+                                    if(e.code == "invalid-credential"){
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(content: Text("Invalid credentials"))
+                                      );
+                                    }
+                                  }
+                                  catch(e){
+                                    print(e.toString());
+                                  }
+                                }
                               },
                                child: Text("Sign In",style: TextStyle(fontWeight: FontWeight.bold),)
                                ),

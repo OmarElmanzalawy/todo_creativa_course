@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "577586333979",
+    "project_id": "creativa-todo",
+    "storage_bucket": "creativa-todo.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:577586333979:android:b7b68ff56d6694cd24ebbe",
+        "android_client_info": {
+          "package_name": "com.example.todo_starter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNvnZG1N1p0Swx4_rlC_KhR7uYwL7SJ7E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
