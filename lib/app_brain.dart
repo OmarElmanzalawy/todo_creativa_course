@@ -24,22 +24,45 @@ class AppBrain {
     }
   }
 
-  void deleteTask(int index){
+  void deleteTask(int index)async{
+    try{
+      await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).collection("tasks").doc(
+      tasks.value[index].id
+    ).delete();
     //copy 
     final List<TaskModel> newList = List.from(tasks.value);
     //remove at certain index
     newList.removeAt(index);
     //update notifier
     tasks.value = newList;
+    }catch(e){
+      print("Error while deleting task");
+      print("ERROR: ${e.toString()}");
+    }
   }
 
   void completeTask(int index){
+    try{
+      //firestore
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    FirebaseFirestore.instance.collection("users").doc(uid).collection("tasks").doc(
+      tasks.value[index].id
+    ).update(
+      {
+        "isCompleted": !tasks.value[index].isCompleted
+      }
+    );
+
     //copy 
     List<TaskModel> newList = List.from(tasks.value);
     //Modify isCompleted
     newList[index].isCompleted = !newList[index].isCompleted;
     //Update notifier
     tasks.value = newList;
+    }catch(e){
+      print("error while completing task");
+      print("${e.toString()}");
+    }    
   }
 
 
