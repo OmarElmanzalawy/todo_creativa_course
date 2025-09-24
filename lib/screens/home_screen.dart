@@ -16,6 +16,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+
+  @override
+  void initState() {
+    appBrain.getTasks();
+    super.initState();
+  }
+
   //HomeScreen scope
   @override
   Widget build(BuildContext context) {
@@ -85,11 +93,42 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       appBar: AppBar(
         title: Text("Todo Screen",style: TextStyle(color: Colors.white),),
-
-
         backgroundColor: Colors.deepPurple,
         actions: [
-          Icon(Icons.delete,color: Colors.white,),
+          IconButton(
+            onPressed: () {
+              // appBrain.deleteAllTasks();
+              showDialog(
+                context: context,
+                 builder:(context) {
+                   return AlertDialog.adaptive(
+                    title: Text("Delete Tasks"),
+                    content: Text("Are you sure you want to delete all tasks?"),
+                    actions: [
+                      TextButton(
+                        onPressed: (){
+                          Navigator.pop(context);
+                          },
+                          style: ButtonStyle(
+                            splashFactory: NoSplash.splashFactory,
+                            overlayColor: WidgetStatePropertyAll(Colors.transparent)
+                          ),
+                         child: Text("Cancel")
+                         ),
+                      TextButton(
+                        onPressed: (){
+                          appBrain.deleteAllTasks();
+                          Navigator.pop(context);
+                        },
+                         child: Text("Delete")
+                         ),
+                    ],
+                   );
+                 },
+                 );
+            },
+            icon:  Icon(Icons.delete,color: Colors.white),
+            ),
           IconButton(onPressed: () async{
             await FirebaseAuth.instance.signOut();
             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder:(context) => SignupScreen(),), (route) => false);
@@ -99,7 +138,11 @@ class _HomeScreenState extends State<HomeScreen> {
       body: ValueListenableBuilder(
         valueListenable: appBrain.tasks,
         builder:(context, value, child) {
-          return Column(
+          return appBrain.tasks.value.isEmpty ? 
+
+          Center(child: Text("No tasks added yet"),)
+          
+          : Column(
           children: [ 
             Expanded(
               child: ListView.builder(

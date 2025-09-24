@@ -24,6 +24,26 @@ class AppBrain {
     }
   }
 
+  void getTasks()async{
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    //get query snapshot (entire collection)
+    final snapshot = await FirebaseFirestore.instance.collection("users").doc(uid).collection("tasks").get();
+
+    //deserialization
+    final fetchedTasks = snapshot.docs.map((document){
+      final data = document.data();
+      return TaskModel(
+        id: data["id"],
+        title: data["title"],
+        description: data["description"],
+        isCompleted: data["isCompleted"]
+      );
+    }).toList();
+
+    tasks.value = fetchedTasks;
+
+  }
+
   void deleteTask(int index)async{
     try{
       await FirebaseFirestore.instance.collection("users").doc(FirebaseAuth.instance.currentUser!.uid).collection("tasks").doc(
@@ -39,6 +59,19 @@ class AppBrain {
       print("Error while deleting task");
       print("ERROR: ${e.toString()}");
     }
+  }
+
+  void deleteAllTasks()async{
+    //Firestore
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final snapshot = await FirebaseFirestore.instance.collection("users").doc(uid).collection("tasks").get();
+    for (QueryDocumentSnapshot document in snapshot.docs){
+       await document.reference.delete();
+    }
+
+  //local
+  tasks.value = [];
+
   }
 
   void completeTask(int index){
