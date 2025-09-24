@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:todo_starter/models/task_model.dart';
 
@@ -5,8 +7,21 @@ class AppBrain {
 
   ValueNotifier<List<TaskModel>> tasks = ValueNotifier([]);
 
-  void addTask(TaskModel task){
-    tasks.value = [...tasks.value, task];
+  void addTask(TaskModel task)async{
+    try{
+      //add task to tasks collection
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+      await FirebaseFirestore.instance.collection("users").doc(uid).collection("tasks").doc(task.id).set({
+        "id": task.id,
+        "title": task.title,
+        "description": task.description,
+        "isCompleted": task.isCompleted
+      });
+      tasks.value = [...tasks.value, task];
+    }catch(e){
+      print("Error while adding task to firestore");
+      print("ERROR: ${e.toString()}");
+    }
   }
 
   void deleteTask(int index){
