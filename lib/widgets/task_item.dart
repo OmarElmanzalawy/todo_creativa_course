@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:todo_starter/main.dart';
 import 'package:todo_starter/models/task_model.dart';
 
-class TaskItem extends StatelessWidget {
+class TaskItem extends StatefulWidget {
   const TaskItem({super.key, required this.model});
 
   final TaskModel model;
+  // final VoidCallback onDeleted;
 
+  @override
+  State<TaskItem> createState() => _TaskItemState();
+}
+
+class _TaskItemState extends State<TaskItem> {
   @override
   Widget build(BuildContext context) {
     return  Container(
@@ -25,14 +32,15 @@ class TaskItem extends StatelessWidget {
       child: ListTile(
         leading: GestureDetector(
           onTap: () {
-          ;
+            final index = appBrain.tasks.value.indexWhere((task) => task.id == widget.model.id);
+            appBrain.completeTask(index);
           },
           child: Container(
             width: 25,
             height: 25,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              // color: widget.model.isCompleted ? Colors.deepPurple : null,
+              color: widget.model.isCompleted ? Colors.deepPurple : null,
               // color: Colors.red
               border: Border.all(color: Colors.grey,width: 2)
             ),
@@ -40,9 +48,12 @@ class TaskItem extends StatelessWidget {
           ),
           
         ),
-        title: Text(model.title),
-        subtitle: Text(model.description),
-        trailing: IconButton(icon:  Icon(Icons.remove),onPressed: (){}
+        title: Text(widget.model.title),
+        subtitle: Text(widget.model.description),
+        trailing: IconButton(icon:  Icon(Icons.remove),onPressed:() {
+          final index = appBrain.tasks.value.indexWhere((task) => task.id == widget.model.id);
+          appBrain.deleteTask(index);
+        },
       ),
       ),
     );
